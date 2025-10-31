@@ -28,13 +28,16 @@ public class GildedRoseTest {
     @Test
     void testUpdateQualityAfterOneDay() {
         app.updateQuality();
-        assertEquals(9, items[0].sellIn); // +5 Dexterity Vest
+        //Item normal
+        assertEquals(9, items[0].sellIn);
         assertEquals(19, items[0].quality);
 
-        assertEquals(1, items[1].sellIn); // Aged Brie
+        //Aged Brie melhora com o tempo
+        assertEquals(1, items[1].sellIn);
         assertEquals(1, items[1].quality);
 
-        assertEquals(4, items[2].sellIn); // Elixir of the Mongoose
+        //Item normal
+        assertEquals(4, items[2].sellIn);
         assertEquals(6, items[2].quality);
 
         // Sulfuras nunca muda
@@ -66,6 +69,48 @@ public class GildedRoseTest {
         //Qualidade não deve ser negativa nunca
         assertTrue(items[0].quality >= 0);
         assertTrue(items[1].quality >= 0);
+    }
+
+    @Test
+    void testAgedBrieImprovement() {
+        Item agedBrie = new Item("Aged Brie", 1, 0);
+        GildedRose singleItemApp = new GildedRose(new Item[]{agedBrie});
+
+        singleItemApp.updateQuality();
+        assertEquals(0, agedBrie.sellIn);
+        assertEquals(1, agedBrie.quality); // Aumenta qualidade
+
+        singleItemApp.updateQuality();
+        assertEquals(-1, agedBrie.sellIn);
+        assertEquals(3, agedBrie.quality); // Aumenta qualidade duas vezes após sellIn < 0
+    }
+
+    @Test
+    void testAgedBrieMaxQuality() {
+        Item agedBrie = new Item("Aged Brie", 5, 49);
+        GildedRose singleItemApp = new GildedRose(new Item[]{agedBrie});
+
+        singleItemApp.updateQuality();
+        assertEquals(4, agedBrie.sellIn);
+        assertEquals(50, agedBrie.quality); // Qualidade não deve exceder 50
+
+        singleItemApp.updateQuality();
+        assertEquals(3, agedBrie.sellIn);
+        assertEquals(50, agedBrie.quality); // Continua no máximo
+    }
+
+    @Test
+    void testSulfurasBehavior() {
+        Item sulfuras = new Item("Sulfuras, Hand of Ragnaros", 0, 80);
+        GildedRose singleItemApp = new GildedRose(new Item[]{sulfuras});
+
+        singleItemApp.updateQuality();
+        assertEquals(0, sulfuras.sellIn);
+        assertEquals(80, sulfuras.quality); // Sulfuras não muda
+
+        singleItemApp.updateQuality();
+        assertEquals(0, sulfuras.sellIn);
+        assertEquals(80, sulfuras.quality); // Continua inalterado
     }
 
     @Test
