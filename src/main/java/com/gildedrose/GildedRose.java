@@ -9,54 +9,71 @@ class GildedRose {
 
     public void updateQuality() {
         for (Item item : items) {
-            if (!item.name.equals("Aged Brie")
-                && !item.name.equals("Backstage passes to a TAFKAL80ETC concert")) {
-                if (item.quality > 0) {
-                    if (!item.name.equals("Sulfuras, Hand of Ragnaros")) {
-                        item.quality = item.quality - 1;
-                    }
-                }
+            boolean isSulfuras = item.name.equals("Sulfuras, Hand of Ragnaros");
+            boolean isAgedBrie = item.name.equals("Aged Brie");
+            boolean isBackstagePasses = item.name.equals("Backstage passes to a TAFKAL80ETC concert");
+
+            if (isSulfuras) {
+                updateSulfuras(item);
+            } else if (isAgedBrie) {
+                updateAgedBrie(item);
+            } else if (isBackstagePasses) {
+                updateBackstagePass(item);
             } else {
-                if (item.quality < 50) {
-                    item.quality = item.quality + 1;
-
-                    if (item.name.equals("Backstage passes to a TAFKAL80ETC concert")) {
-                        if (item.sellIn < 11) {
-                            if (item.quality < 50) {
-                                item.quality = item.quality + 1;
-                            }
-                        }
-
-                        if (item.sellIn < 6) {
-                            if (item.quality < 50) {
-                                item.quality = item.quality + 1;
-                            }
-                        }
-                    }
-                }
+                updateNormalItem(item);
             }
+        }
+    }
 
-            if (!item.name.equals("Sulfuras, Hand of Ragnaros")) {
-                item.sellIn = item.sellIn - 1;
-            }
 
-            if (item.sellIn < 0) {
-                if (!item.name.equals("Aged Brie")) {
-                    if (!item.name.equals("Backstage passes to a TAFKAL80ETC concert")) {
-                        if (item.quality > 0) {
-                            if (!item.name.equals("Sulfuras, Hand of Ragnaros")) {
-                                item.quality = item.quality - 1;
-                            }
-                        }
-                    } else {
-                        item.quality = 0;
-                    }
-                } else {
-                    if (item.quality < 50) {
-                        item.quality = item.quality + 1;
-                    }
-                }
+    private void updateSulfuras(Item item) {
+        //Sulfuras não perde qualidade nem precisa ser vendido
+    }
+
+    private void updateAgedBrie(Item item) {
+        decreaseSellIn(item);
+        increaseQuality(item);
+        if (item.sellIn < 0) {
+            increaseQuality(item);
+        }
+    }
+
+    private void updateBackstagePass(Item item) {
+        decreaseSellIn(item);
+        if (item.sellIn < 0) {
+            item.quality = 0;
+        } else {
+            increaseQuality(item);
+            if (item.sellIn < 10) {
+                increaseQuality(item);
             }
+            if (item.sellIn < 5) {
+                increaseQuality(item);
+            }
+        }
+    }
+
+    private void updateNormalItem(Item item) {
+        decreaseSellIn(item);
+        decreaseQuality(item);
+        if (item.sellIn < 0) {
+            decreaseQuality(item);
+        }
+    }
+
+    private void decreaseSellIn(Item item) {
+        item.sellIn = item.sellIn - 1;
+    }
+
+    private void increaseQuality(Item item) {
+        if (item.quality < 50) {
+            item.quality = item.quality + 1;
+        }
+    }
+
+    private void decreaseQuality(Item item) {
+        if (item.quality > 0) {
+            item.quality = item.quality - 1;
         }
     }
 }
