@@ -40,6 +40,22 @@ public class GildedRoseTest {
         // Sulfuras nunca muda
         assertEquals(0, items[3].sellIn);
         assertEquals(80, items[3].quality);
+
+        //Backstage passes prazo normal
+        assertEquals(14 ,items[5].sellIn);
+        assertEquals(21, items[5].quality);
+
+        //Backstage passes prazo <= 10
+        assertEquals(9 ,items[6].sellIn);
+        assertEquals(50, items[6].quality);
+
+        //Backstage passes prazo <= 5
+        assertEquals(4 ,items[7].sellIn);
+        assertEquals(50, items[7].quality);
+
+        // Conjured item
+        assertEquals(2, items[8].sellIn);
+        assertEquals(4, items[8].quality);
     }
 
     @Test
@@ -73,5 +89,23 @@ public class GildedRoseTest {
         }
         assertEquals(-4, backstagePass.sellIn);
         assertEquals(0, backstagePass.quality); // Qualidade zera após data do concerto
+    }
+
+    @Test
+    void testConjuredItemDegradation() {
+        Item conjuredItem = new Item("Conjured Mana Cake", 2, 20);
+        GildedRose singleItemApp = new GildedRose(new Item[]{conjuredItem});
+
+        singleItemApp.updateQuality();
+        assertEquals(1, conjuredItem.sellIn);
+        assertEquals(18, conjuredItem.quality); // Degradação de 2
+
+        singleItemApp.updateQuality();
+        assertEquals(0, conjuredItem.sellIn);
+        assertEquals(16, conjuredItem.quality); // Degradação de 2
+
+        singleItemApp.updateQuality();
+        assertEquals(-1, conjuredItem.sellIn);
+        assertEquals(12, conjuredItem.quality); // Degradação 2x mais rápida após sellIn < 0
     }
 }

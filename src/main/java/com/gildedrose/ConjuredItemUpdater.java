@@ -1,11 +1,10 @@
 package com.gildedrose;
 
-public class DefaultUpdater implements ItemUpdater {
+public class ConjuredItemUpdater implements ItemUpdater {
     @Override
     public void updateItem(Item item) {
         decreaseSellIn(item);
         decreaseQuality(item);
-
         if (item.sellIn < 0) {
             decreaseQuality(item);
         }
@@ -17,7 +16,7 @@ public class DefaultUpdater implements ItemUpdater {
 
     private void decreaseQuality(Item item) {
         if (item.quality > 0) {
-            item.quality -= 1;
+            item.quality -= 2;
         }
     }
 }
