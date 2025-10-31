@@ -8,10 +8,10 @@ public class BackstagePassUpdater implements ItemUpdater {
             item.quality = 0;
         } else {
             increaseQuality(item);
-            if (item.sellIn < 10) {
+            if (item.sellIn <= 10) {
                 increaseQuality(item);
             }
-            if (item.sellIn < 5) {
+            if (item.sellIn <= 5) {
                 increaseQuality(item);
             }
         }

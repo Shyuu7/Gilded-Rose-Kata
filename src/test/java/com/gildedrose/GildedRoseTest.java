@@ -44,21 +44,34 @@ public class GildedRoseTest {
 
     @Test
     void testUpdateQualityAfterMultipleDays() {
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 21; i++) {
             app.updateQuality();
         }
-        assertTrue(items[0].quality >= 0, "Quality should not be negative");
-        assertTrue(items[1].quality >= 0, "Quality should not be negative");
+        //Qualidade não deve ser negativa nunca
+        assertTrue(items[0].quality >= 0);
+        assertTrue(items[1].quality >= 0);
     }
 
     @Test
-    void testBackstagePassesBehavior() {
+    void testBackstagePasses() {
         Item backstagePass = new Item("Backstage passes to a TAFKAL80ETC concert", 11, 20);
         GildedRose singleItemApp = new GildedRose(new Item[]{backstagePass});
 
         singleItemApp.updateQuality();
 
         assertEquals(10, backstagePass.sellIn);
-        assertEquals(21, backstagePass.quality); // +1 quando sellIn > 10
+        assertEquals(22, backstagePass.quality); // +2 quando sellIn <= 10
+
+       for (int i = 1; i < 6; i++) {
+            singleItemApp.updateQuality();
+       }
+        assertEquals(5, backstagePass.sellIn);
+        assertEquals(33, backstagePass.quality); // +3 quando sellIn <= 5
+
+        for (int i = 1; i < 10; i++) {
+            singleItemApp.updateQuality();
+        }
+        assertEquals(-4, backstagePass.sellIn);
+        assertEquals(0, backstagePass.quality); // Qualidade zera após data do concerto
     }
 }

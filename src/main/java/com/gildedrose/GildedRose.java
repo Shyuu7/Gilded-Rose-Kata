@@ -13,6 +13,7 @@ class GildedRose {
         initializeUpdaters();
     }
 
+    //Delegando cada updater para seu respectivo item
     private void initializeUpdaters() {
         updaters.put("Sulfuras, Hand of Ragnaros", new SulfurasUpdater());
         updaters.put("Aged Brie", new AgedBrieUpdater());
@@ -21,6 +22,7 @@ class GildedRose {
 
     public void updateQuality() {
         for (Item item : items) {
+            //Comportamento padrão para itens não especiais
             ItemUpdater updater = updaters.getOrDefault(item.name, new DefaultUpdater());
             updater.updateItem(item);
         }
